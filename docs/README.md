@@ -20,12 +20,13 @@ This directory is the operator and contributor reference. The Go loader, runner,
 | [Limitations](limitations.md) | What this release does not claim |
 | [Planner](planner.md) | Which manifests a diff selects, and why |
 | [CI](ci.md) | GitHub Actions workflows |
+| [API](api.md) | Run admission, states, and webhook checks |
 | [Roadmap](roadmap.md) | Later phases, marked as not implemented until a release says otherwise |
 
 ## Release status
 
-Version **0.2.0** adds change detection and pull-request planning on top of the 0.1.0 local benchmark.
+Version **0.3.0** adds run admission on top of local benchmarks and diff planning.
 
-It can validate a manifest, start a disposable PostgreSQL 17 container, seed a deterministic dataset, run a Go query mix or pgbench, write a JSON report, compare that report with a compatible baseline, and choose manifests from a diff.
+It can validate a manifest, start a disposable PostgreSQL 17 container, seed a deterministic dataset, run a Go query mix or pgbench, write a JSON report, compare that report with a compatible baseline, choose manifests from a diff, and admit runs through an authenticated API.
 
-It does not yet run the HTTP API, k6, Prometheus, Terraform, capacity planner, or canary controller. Those are specified in [roadmap](roadmap.md).
+It does not yet run k6, Prometheus, Terraform, the capacity planner, or the canary controller. Those are specified in [roadmap](roadmap.md).

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.3.0
+
+Run admission.
+
+- Explicit state machine, idempotent submit, global and per-repository limits, cancel, and stale-run recovery.
+- HTTP API with bearer auth and GitHub webhook signature checks. Unknown repositories are rejected.
+- Worker records the report, keeps infrastructure failures as `failed`, and still cleans up.
+- `migrations/001_runs.sql` is the Postgres shape. The tested store is in-process memory.
+
 ## 0.2.0
 
 CI planning.

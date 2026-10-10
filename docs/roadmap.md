@@ -13,12 +13,13 @@ Implemented in 0.2.0. See [planner](planner.md) and [ci](ci.md).
 
 ## Phase 3 — API, queue, and state machine
 
+Implemented in 0.3.0. See [api](api.md).
+
 - `cmd/api` and `cmd/worker`.
-- PostgreSQL tables for runs, events, and idempotency keys.
-- A queue interface with an in-process adapter first. SQS comes with the AWS phase.
-- Persisted states `queued → validating → provisioning → preparing → warming_up → running → analyzing → completed|failed|inconclusive → cleaned_up`.
-- Global and per-repository concurrency, retries, cancellation, and recovery of runs whose worker disappeared.
-- Authentication on the API and webhook signature verification. Not a shared anonymous port.
+- `migrations/001_runs.sql` for runs, events, and idempotency keys. The running API uses the in-process store covered by the tests.
+- States `queued → validating → provisioning → preparing → warming_up → running → analyzing → completed|failed|inconclusive → cleaned_up`.
+- Global and per-repository concurrency, cancellation, and recovery of runs whose worker disappeared.
+- Bearer authentication and GitHub webhook signature verification. A webhook does not enqueue a repository that is not on the allow list.
 
 ## Phase 4 — HTTP load and diagnosis
 
