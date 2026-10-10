@@ -1,0 +1,6 @@
+/bin/
+/reports/
+*.exe
+.benchforge/
+*.log
+pgbench_log.*

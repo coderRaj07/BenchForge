@@ -1,0 +1,14 @@
+# Optional long-lived database for inspection. The benchmark CLI does not use
+# this file. `benchforge run` starts its own disposable container.
+# Local password only. Do not reuse it anywhere else.
+services:
+  postgres:
+    image: postgres:17.6-bookworm@sha256:f3bd19c606e442c3d7bdfa8002e03fe260a1023351e0ea4598032022b68dd6e3
+    environment:
+      POSTGRES_USER: benchforge
+      POSTGRES_PASSWORD: benchforge
+      POSTGRES_DB: benchforge
+    ports:
+      - "127.0.0.1:54329:5432"
+    mem_limit: 1g
+    cpus: 1

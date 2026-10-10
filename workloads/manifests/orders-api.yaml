@@ -1,0 +1,65 @@
+# Illustrative orders API benchmark. These thresholds are examples, not
+# universal performance targets. Validate it before a long run:
+#   benchforge validate -f workloads/manifests/orders-api.yaml
+apiVersion: benchforge.dev/v1alpha1
+kind: Benchmark
+metadata:
+  name: orders-api
+  owner: platform-team
+target:
+  type: postgres
+  source: ephemeral
+  postgresVersion: "17"
+dataset:
+  seed: 42
+  scale: 1
+  profile: orders-mixed
+  warmupSeconds: 60
+  migrations: ../postgres/migrations
+workload:
+  type: mixed
+  durationSeconds: 180
+  arrivalRatePerSecond: 100
+  maxConcurrency: 100
+  rampUpSeconds: 30
+queries:
+  - id: get-customer-orders
+    file: ../postgres/sql/get_customer_orders.sql
+    weight: 70
+    timeoutMs: 1000
+    params:
+      - name: customer_id
+        type: int
+        distribution: uniform
+        min: 1
+        maxFrom: customers
+  - id: create-order
+    file: ../postgres/sql/create_order.sql
+    weight: 30
+    timeoutMs: 1000
+    transactional: true
+    params:
+      - name: customer_id
+        type: int
+        distribution: uniform
+        min: 1
+        maxFrom: customers
+      - name: total_cents
+        type: int
+        distribution: uniform
+        min: 500
+        max: 20000
+assertions:
+  maxP95Ms: 200
+  maxP99Ms: 500
+  maxErrorRate: 0.01
+  maxRegressionPercent: 10
+resources:
+  database:
+    cpu: "2"
+    memory: "4Gi"
+  loadGenerator:
+    cpu: "2"
+    memory: "2Gi"
+cleanup:
+  ttlSecondsAfterFinished: 600

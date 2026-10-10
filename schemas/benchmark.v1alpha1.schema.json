@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://benchforge.dev/schemas/benchmark.v1alpha1.schema.json",
+  "title": "BenchForge Benchmark",
+  "description": "Documentation schema for benchforge.dev/v1alpha1. The Go loader is the authority: it rejects unknown fields and enforces resource limits that this schema cannot express by itself.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["apiVersion", "kind", "metadata", "target", "dataset", "workload", "assertions"],
+  "properties": {
+    "apiVersion": { "const": "benchforge.dev/v1alpha1" },
+    "kind": { "const": "Benchmark" },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string", "pattern": "^[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])?$" },
+        "owner": { "type": "string", "maxLength": 64 },
+        "annotations": { "type": "object", "additionalProperties": { "type": "string" } }
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": { "enum": ["postgres"] },
+        "source": { "enum": ["ephemeral", "external"] },
+        "postgresVersion": { "enum": ["16", "17"] }
+      }
+    },
+    "dataset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profile", "migrations"],
+      "properties": {
+        "seed": { "type": "integer", "minimum": 0 },
+        "scale": { "type": "number", "minimum": 0.01, "maximum": 20 },
+        "profile": { "const": "orders-mixed" },
+        "warmupSeconds": { "type": "integer", "minimum": 0, "maximum": 600 },
+        "migrations": { "type": "string" }
+      }
+    },
+    "workload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": { "enum": ["query", "mixed", "pgbench"] },
+        "durationSeconds": { "type": "integer", "minimum": 1, "maximum": 1800 },
+        "arrivalRatePerSecond": { "type": "integer", "minimum": 0, "maximum": 20000 },
+        "maxConcurrency": { "type": "integer", "minimum": 1, "maximum": 128 },
+        "rampUpSeconds": { "type": "integer", "minimum": 0, "maximum": 600 },
+        "clients": { "type": "integer", "minimum": 1 },
+        "threads": { "type": "integer", "minimum": 1 },
+        "script": { "type": "string" }
+      }
+    },
+    "queries": {
+      "type": "array",
+      "maxItems": 32,
+      "items": { "$ref": "#/$defs/query" }
+    },
+    "assertions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "maxP95Ms": { "type": "number", "minimum": 1 },
+        "maxP99Ms": { "type": "number", "minimum": 1 },
+        "maxErrorRate": { "type": "number", "minimum": 0, "maximum": 1 },
+        "maxRegressionPercent": { "type": "number", "minimum": 0, "maximum": 500 },
+        "minIterations": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "resources": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "database": { "$ref": "#/$defs/resources" },
+        "loadGenerator": { "$ref": "#/$defs/resources" }
+      }
+    },
+    "cleanup": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ttlSecondsAfterFinished": { "type": "integer", "minimum": 0, "maximum": 86400 }
+      }
+    },
+    "baseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "reportFile": { "type": "string" }
+      }
+    }
+  },
+  "$defs": {
+    "query": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "file"],
+      "properties": {
+        "id": { "type": "string" },
+        "file": { "type": "string" },
+        "weight": { "type": "integer", "minimum": 1, "maximum": 10000 },
+        "timeoutMs": { "type": "integer", "minimum": 1, "maximum": 120000 },
+        "transactional": { "type": "boolean" },
+        "params": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "type"],
+            "properties": {
+              "name": { "type": "string" },
+              "type": { "enum": ["int", "text"] },
+              "distribution": { "enum": ["uniform", "constant"] },
+              "min": { "type": "integer" },
+              "max": { "type": "integer" },
+              "maxFrom": { "enum": ["customers", "products", "orders"] },
+              "value": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "resources": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "cpu": { "type": "string" },
+        "memory": { "type": "string" }
+      }
+    }
+  }
+}

@@ -1,0 +1,63 @@
+# pgbench custom-script workload. Percentiles come from the transaction log.
+apiVersion: benchforge.dev/v1alpha1
+kind: Benchmark
+metadata:
+  name: orders-pgbench
+  owner: platform-team
+target:
+  type: postgres
+  source: ephemeral
+  postgresVersion: "17"
+dataset:
+  seed: 42
+  scale: 1
+  profile: orders-mixed
+  warmupSeconds: 2
+  migrations: ../postgres/migrations
+workload:
+  type: pgbench
+  durationSeconds: 15
+  maxConcurrency: 8
+  clients: 4
+  threads: 2
+queries:
+  - id: get-customer-orders
+    file: ../postgres/sql/get_customer_orders.sql
+    weight: 70
+    timeoutMs: 1000
+    params:
+      - name: customer_id
+        type: int
+        distribution: uniform
+        min: 1
+        maxFrom: customers
+  - id: create-order
+    file: ../postgres/sql/create_order.sql
+    weight: 30
+    timeoutMs: 1000
+    params:
+      - name: customer_id
+        type: int
+        distribution: uniform
+        min: 1
+        maxFrom: customers
+      - name: total_cents
+        type: int
+        distribution: uniform
+        min: 500
+        max: 20000
+assertions:
+  maxP95Ms: 200
+  maxP99Ms: 500
+  maxErrorRate: 0.01
+  maxRegressionPercent: 20
+  minIterations: 30
+resources:
+  database:
+    cpu: "1"
+    memory: "1Gi"
+  loadGenerator:
+    cpu: "1"
+    memory: "512Mi"
+cleanup:
+  ttlSecondsAfterFinished: 60

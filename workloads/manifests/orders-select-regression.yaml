@@ -1,0 +1,47 @@
+# Same workload identity as orders-select.yaml, with a query that cannot use
+# orders_customer_created_idx. Compare it with an orders-select report.
+apiVersion: benchforge.dev/v1alpha1
+kind: Benchmark
+metadata:
+  name: orders-select
+  owner: platform-team
+target:
+  type: postgres
+  source: ephemeral
+  postgresVersion: "17"
+dataset:
+  seed: 42
+  scale: 1
+  profile: orders-mixed
+  warmupSeconds: 2
+  migrations: ../postgres/migrations
+workload:
+  type: query
+  durationSeconds: 15
+  maxConcurrency: 4
+queries:
+  - id: get-customer-orders
+    file: ../postgres/sql/get_customer_orders_seqscan.sql
+    weight: 1
+    timeoutMs: 2000
+    params:
+      - name: customer_id
+        type: int
+        distribution: uniform
+        min: 1
+        maxFrom: customers
+assertions:
+  maxP95Ms: 200
+  maxP99Ms: 500
+  maxErrorRate: 0.01
+  maxRegressionPercent: 20
+  minIterations: 30
+resources:
+  database:
+    cpu: "1"
+    memory: "1Gi"
+  loadGenerator:
+    cpu: "1"
+    memory: "512Mi"
+cleanup:
+  ttlSecondsAfterFinished: 60
