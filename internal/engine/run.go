@@ -295,6 +295,9 @@ func Run(ctx context.Context, opt Options) (*report.Report, error) {
 	mark(rep, "completed")
 	opt.Logger.Info("analysis complete", "run_id", rep.RunID, "outcome", rep.Outcome)
 	return rep, nil
+	// What: runs one local benchmark from a manifest through cleanup.
+	// Used by: internal/cli/cli.go cmdRun, and internal/worker/worker.go when Execute is nil. The Docker integration test calls it directly.
+	// Logic: rep is the report, allocated before validation so failures still have an id. execErr is the infrastructure error; the first defer copies it onto rep and forces outcome ERROR. The second defer calls env.Remove unless Keep is set. spec comes from manifest.Load. DurationOverride and ScaleOverride replace spec fields when they stay inside Limits. env is either provisioner.External or a new Docker container. pool is the pgx pool. info is the server snapshot after seed. major must equal spec.PostgresVersion. maxActive is updated by sampleActive. qout or the pgbench outcome fills queries, load, and database deltas. base is the optional baseline file. eval is baseline.Evaluate, copied onto rep. Cleanup runs after return because of defer order.
 }
 
 func fillIdentity(rep *report.Report, spec *manifest.Benchmark) {

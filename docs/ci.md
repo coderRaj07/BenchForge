@@ -27,4 +27,6 @@ Runs on pull request, with `contents: read` and `pull-requests: write`.
 
 The comment is the suite selection, not a performance result. A performance result is produced by `benchforge run` and rendered with `benchforge report`.
 
+Neither workflow starts PostgreSQL, stores TPS or latency, or deletes a container. That lifecycle is the local `benchforge run` command and the `integration` test tag. See [what runs](what-runs.md).
+
 Action references use the major tags `v4` and `v5` published by GitHub for those actions. The Go version is pinned to 1.27.2.

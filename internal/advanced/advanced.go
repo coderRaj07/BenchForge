@@ -29,6 +29,9 @@ func CheckRoute(kind string, contacted, expected int) error {
 		return fmt.Errorf("route kind %q must be targeted, scatter, or aggregate", kind)
 	}
 	return nil
+	// What: checks that a query touched the right number of shards.
+	// Used by: internal/advanced/advanced_test.go TestRouteSkewCostAndCompare. Nothing in the runner calls it yet.
+	// Logic: kind selects the rule. contacted is how many shards the caller says were hit. expected is how many should have been hit. targeted ignores expected and requires contacted == 1. scatter and aggregate require expected >= 1 and contacted == expected. Any other kind returns an error. nil means the counts match.
 }
 
 // Skew gives the first tenant hotShare of the traffic and splits the rest evenly.
@@ -46,6 +49,9 @@ func Skew(tenants int, hotShare float64) ([]float64, error) {
 		out[i] = each
 	}
 	return out, nil
+	// What: builds per-tenant traffic weights with one hot tenant.
+	// Used by: internal/advanced/advanced_test.go TestRouteSkewCostAndCompare.
+	// Logic: tenants is the slice length. hotShare is the fraction stored in out[0]. each is the leftover share split across the other tenants, written into out[i] by the loop. The returned slice sums to 1. Values outside (0,1) or tenants < 2 return an error and no slice.
 }
 
 // CostPerRun converts measured CPU and memory over the run into dollars.
@@ -59,6 +65,9 @@ func CostPerRun(cpuCores, memoryGiB, seconds, cpuHourly, memoryHourly float64) f
 	}
 	hours := seconds / 3600
 	return cpuCores*hours*cpuHourly + memoryGiB*hours*memoryHourly
+	// What: turns measured CPU and memory over a run into a dollar figure.
+	// Used by: internal/advanced/advanced_test.go TestRouteSkewCostAndCompare.
+	// Logic: cpuHourly and memoryHourly are overwritten with 0.04 and 0.005 when the caller passes 0. hours is seconds/3600. The return multiplies cores and GiB by hours and those prices and adds the two products.
 }
 
 // CompareEnvironments reports the p95 ratio and the resource difference.
@@ -73,6 +82,9 @@ func CompareEnvironments(a, b report.Report) (float64, string) {
 		note += fmt.Sprintf("; resources %s/%s versus %s/%s, so this is not a regression verdict", a.Environment.CPU, a.Environment.Memory, b.Environment.CPU, b.Environment.Memory)
 	}
 	return ratio, note
+	// What: compares two reports when the machines may differ.
+	// Used by: internal/advanced/advanced_test.go TestRouteSkewCostAndCompare. baseline.Evaluate is a separate gate and does not call this.
+	// Logic: ratio starts at 0 and becomes a.p95/b.p95 when b.p95 is positive. note starts as that ratio. If CPU or memory text differs, note is appended with both resource pairs and the words "not a regression".
 }
 
 // CaptureCPU records a CPU profile for the given duration. Pass zero to skip.
@@ -87,4 +99,7 @@ func CaptureCPU(d time.Duration) ([]byte, error) {
 	time.Sleep(d)
 	pprof.StopCPUProfile()
 	return buf.Bytes(), nil
+	// What: writes a Go CPU profile for duration d, or returns nil when d is not positive.
+	// Used by: internal/advanced/advanced_test.go TestCaptureCPU. Manifests do not call it automatically.
+	// Logic: d <= 0 returns immediately. buf receives profile bytes from pprof.StartCPUProfile. time.Sleep holds the process so the profiler has samples. StopCPUProfile flushes buf. The returned slice is buf.Bytes().
 }

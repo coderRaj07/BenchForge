@@ -27,4 +27,7 @@ func ChangedFiles(ctx context.Context, workspace, base string) ([]string, error)
 		}
 	}
 	return files, nil
+	// What: lists files changed between a git revision and HEAD.
+	// Used by: internal/cli/plan.go cmdPlan when --base is set. .github/workflows/benchmark-plan.yml passes origin/<base ref>.
+	// Logic: base empty returns an error. cmd is git diff --name-only base...HEAD inside workspace. out is the command stdout. files collects non-empty trimmed lines from that stdout.
 }

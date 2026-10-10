@@ -25,7 +25,8 @@ This directory is the operator and contributor reference. The Go loader, runner,
 | [Cloud](cloud.md) | Artifacts, budgets, Terraform, and the benchmark Job |
 | [Capacity](capacity.md) | Sustainable rate, CPU and memory estimates, canary gates |
 | [Advanced](advanced.md) | Routing checks, skew, soak, profiles, and cost per run |
-| [Roadmap](roadmap.md) | Later phases, marked as not implemented until a release says otherwise |
+| [What runs](what-runs.md) | Canary, CI, and the local Docker lifecycle |
+| [Roadmap](roadmap.md) | What each phase contains |
 
 ## Release status
 
@@ -33,4 +34,4 @@ Version **0.7.0** is the current release.
 
 It can validate a manifest, benchmark an isolated PostgreSQL database, compare a baseline, plan a diff, admit runs through the API, parse a k6 summary, list likely bottlenecks, reject an over-budget estimate, size a measured sweep, gate a canary step, check shard contact counts, build a skewed tenant mix, capture a CPU profile on request, require a 60 second soak, and price a run from measured CPU and memory time.
 
-The Terraform file is not applied by the test suite. The Argo file does not install a controller. Routing checks do not start a distributed database.
+Canary rollout, CI Docker benchmarking, Terraform apply, and a sharded database do not run. [What runs](what-runs.md) lists each path.

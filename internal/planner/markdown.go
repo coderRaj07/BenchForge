@@ -58,4 +58,7 @@ func PullRequestMarkdown(rep *report.Report) string {
 	}
 	b.WriteString("Infrastructure failures stay `ERROR`. An inconclusive result is not a performance regression.\n")
 	return b.String()
+	// What: renders a finished report as pull-request markdown.
+	// Used by: internal/cli/plan.go cmdReport. Tested in internal/planner/plan_test.go TestPullRequestMarkdownRegression.
+	// Logic: a nil report returns one sentence. b collects the outcome, run id, manifest, and state. q rows are one table line each. fails keeps only SeverityFail findings. id is the query id in parentheses when set. Incompatible comparison reasons are listed after the findings.
 }

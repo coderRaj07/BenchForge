@@ -1,6 +1,6 @@
 # Limitations
 
-These are properties of version 0.1.0, not bugs waiting in a comment.
+These limits still apply. [What runs](what-runs.md) separates local Docker benchmarks from CI and from the canary decision function.
 
 ## Measurement
 
@@ -24,11 +24,9 @@ These are properties of version 0.1.0, not bugs waiting in a comment.
 - `--keep` and a crashed Docker daemon can leave a container. Cleanup is inline, not a reconciling controller.
 - Image digest mismatch does not make a baseline incompatible.
 
-## Not measured yet
+## Not collected by a normal benchmark run
 
-CPU, memory, disk utilization, lock waits, `pg_stat_statements`, flame graphs, k6, and cost are not collected. A report that does not mention them is not implying they were healthy. The database block is the resource data this version actually stores.
-
-Capacity planning formulas, including Little's Law and CPU-seconds per request, are not computed. Do not read a TPS number as a sizing recommendation.
+A report from `benchforge run` stores query latency, pool wait, pgbench output, and `pg_stat_database` deltas. It does not store host CPU, host memory, disk utilization, `pg_stat_statements`, lock waits, or a flame graph. k6 is not executed. `capacity.Analyze` and `advanced.CostPerRun` run only when a caller passes samples and prices. They do not read the report by themselves. CI does not run any of those steps. See [what runs](what-runs.md).
 
 ## Compatibility of this document
 

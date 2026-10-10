@@ -18,4 +18,4 @@ Confidence stays `low` below three valid samples, `medium` at three or four, and
 - An error rate above the cap, or a p95 increase above the allowed percent, rolls back.
 - A passing step advances to the next weight in the list. The last step promotes in place.
 
-`deploy/argo-rollouts/orders-rollout.yaml` is the rollout shape with weights 10, 25, 50, and 100. The decision function is what the analysis job should call. This repository does not install Argo Rollouts, and the benchmark must not point at a shared production database.
+`deploy/argo-rollouts/orders-rollout.yaml` is the rollout shape with weights 10, 25, 50, and 100. The decision function is what an analysis job would call. This repository does not install Argo Rollouts, does not shift traffic, and does not promote a deployment. A benchmark must not point at a shared production database. See [what runs](what-runs.md).

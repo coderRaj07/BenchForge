@@ -44,4 +44,7 @@ func main() {
 			}
 		}
 	}
+	// What: polls an in-memory queue and runs each job until the process is signalled.
+	// Used by: the benchforge-worker process, package main only.
+	// Logic: ctx ends on SIGINT or SIGTERM. store and w are a new memory queue and worker that do not share state with another process. ticker fires once a second. job, ok, err come from Receive. An empty queue exits when BENCHFORGE_WORKER_ONCE is 1, otherwise the loop waits. Process errors are logged and the loop continues.
 }

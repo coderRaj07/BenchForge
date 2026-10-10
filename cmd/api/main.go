@@ -36,4 +36,7 @@ func main() {
 	}); err != nil {
 		log.Fatal(err)
 	}
+	// What: starts the HTTP API and blocks until it stops.
+	// Used by: the benchforge-api process, package main only.
+	// Logic: token is BENCHFORGE_API_TOKEN and an empty value stops the process. allowed starts empty and gains each comma-separated name from BENCHFORGE_ALLOWED_REPOS. The Server uses that token, BENCHFORGE_WEBHOOK_SECRET, and a new in-memory scheduler limited to 4 global runs and 2 per repository with a 30 minute timeout. Listen uses BENCHFORGE_API_ADDR.
 }

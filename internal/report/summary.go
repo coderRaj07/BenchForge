@@ -71,6 +71,9 @@ func Summary(rep *Report) string {
 		fmt.Fprintf(&b, "Cleanup:   %s\n", rep.CleanupError)
 	}
 	return b.String()
+	// What: formats a report as the text the CLI prints.
+	// Used by: internal/cli/cli.go cmdRun and cmdCompare. Tested in internal/report/summary_test.go.
+	// Logic: b accumulates lines. A nil report returns "no report". The first lines are run id, state, outcome, and manifest name. Query rows and the pgbench line are appended only when those sections exist. Info findings are skipped. id is the query id wrapped in brackets when it is set. FailureReason and CleanupError are printed last.
 }
 
 // ExitCode maps an outcome to a process status.
@@ -94,4 +97,7 @@ func ExitCode(rep *Report) int {
 		return 1
 	}
 	return code
+	// What: maps a report outcome to a process exit code.
+	// Used by: internal/cli/cli.go cmdRun and cmdReport, and internal/report/summary_test.go.
+	// Logic: a nil report is 1. code starts at 1, then PASS sets 0, REGRESSION sets 2, INCONCLUSIVE sets 3, and ERROR stays 1. CleanupError changes a 0 into 1 and leaves 2 or 3 alone so a regression is still visible.
 }

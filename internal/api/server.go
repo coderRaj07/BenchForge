@@ -115,6 +115,9 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(run)
+	// What: routes health, webhook, create, get, and cancel requests.
+	// Used by: Listen, and internal/api/server_test.go.
+	// Logic: /healthz writes ok with no auth. The webhook reads body, checks the signature, and decodes event. A repository missing from AllowedRepos gets 403 and is not queued. Other routes require Bearer. POST /v1/runs decodes req and uses the Idempotency-Key header when the JSON key is empty. Submit errors are 400, or 429 when the error is ErrCapacity. path is the URL after /v1/runs. A path ending in /cancel calls Cancel. GET loads the run by id. Any other method is 405.
 }
 
 // Listen starts the API. addr defaults to :8080 when empty.
@@ -124,4 +127,7 @@ func Listen(addr string, srv *Server) error {
 	}
 	httpSrv := &http.Server{Addr: addr, Handler: srv, ReadHeaderTimeout: 5 * time.Second}
 	return httpSrv.ListenAndServe()
+	// What: blocks serving the API on addr.
+	// Used by: cmd/api/main.go.
+	// Logic: an empty addr becomes :8080. httpSrv uses srv as the handler and a 5 second header timeout. ListenAndServe returns only when the server stops.
 }

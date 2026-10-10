@@ -93,4 +93,7 @@ func Analyze(samples []Sample, slo SLO) Result {
 		out.Confidence = "high"
 	}
 	return out
+	// What: finds the highest achieved rate that still met the SLO, plus CPU, memory, and concurrency estimates.
+	// Used by: internal/capacity/capacity_test.go. The CLI does not call it yet.
+	// Logic: out starts invalid with confidence low and four assumption strings. TargetCPUUtil is set to 0.7 when it is outside (0,1]. Negative headroom becomes 0. valid counts samples that are kept. best is the kept sample with the largest Achieved. mem is the largest MemoryBytes seen, including saturated samples. A saturated sample sets FirstSaturation once and is skipped. breaks is true when p95 or error rate crosses the SLO; that sample also sets FirstSaturation once and is skipped. After the loop, valid == 0 returns out still invalid. Otherwise SustainableRPS is best.Achieved, LittlesConcurrency is that rate times mean latency in seconds, CPUCores divides CPU seconds per request by TargetCPUUtil and multiplies by (1+headroom), and MemoryBytes is mem times (1+headroom). Confidence becomes medium at 3 valid samples and high at 5 valid samples when a limit was also seen.
 }

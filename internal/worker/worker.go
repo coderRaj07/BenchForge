@@ -98,6 +98,9 @@ func (w *Worker) Process(ctx context.Context, job scheduler.Job) error {
 		return err
 	}
 	return w.finish(ctx, finished, now)
+	// What: moves one queued run through the state machine, executes it, and cleans up.
+	// Used by: cmd/worker/main.go and internal/worker/worker_test.go.
+	// Logic: now is the clock, overridable by w.Now. run is loaded by job.RunID. A run already failed or cleaned up returns immediately. steps walks validating through running, and a cancel that sets failed during that walk calls finish. exec is w.Execute or engine.Run. runCtx ends at run.Deadline. rep and execErr are the measurement. outcome becomes completed for PASS and REGRESSION, inconclusive for INCONCLUSIVE, and failed otherwise. reason stores the error text, the word regression, or the report failure. The report JSON is saved before the final transition. finished is the run after that transition, passed to finish.
 }
 
 func (w *Worker) finish(ctx context.Context, run *scheduler.Run, now time.Time) error {
@@ -110,4 +113,7 @@ func (w *Worker) finish(ctx context.Context, run *scheduler.Run, now time.Time) 
 		return nil
 	}
 	return w.Store.Transition(ctx, run.ID, run.State, scheduler.StateCleanedUp, "", now)
+	// What: runs the cleaner and records cleaned_up.
+	// Used by: Process, including the path that stops early because the run was cancelled.
+	// Logic: w.Clean is optional. A cleaner error is returned and the state stays where it was. A run already in cleaned_up returns nil. Otherwise Transition moves run.State to cleaned_up at now.
 }

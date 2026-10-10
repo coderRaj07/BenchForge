@@ -45,6 +45,9 @@ func Select(workspace string, changes []string) (*Plan, error) {
 		return nil, err
 	}
 	return SelectSpecs(workspace, changes, specs), nil
+	// What: loads every shipped manifest and maps changed paths onto them.
+	// Used by: internal/cli/plan.go cmdPlan, and internal/planner/plan_test.go.
+	// Logic: specs is the validated manifest list from workloads/manifests. changes is passed through unchanged to SelectSpecs, which returns the plan.
 }
 
 // LoadManifests reads workloads/manifests/*.yaml inside the workspace.
@@ -168,6 +171,9 @@ func SelectSpecs(workspace string, changes []string, specs []*manifest.Benchmark
 		plan.Reasons = append(plan.Reasons, "no manifest matched the changed paths")
 	}
 	return plan
+	// What: maps changed paths to manifests and asks for the full suite when a path does not map.
+	// Used by: Select, and internal/planner/plan_test.go.
+	// Logic: plan starts at high confidence. path is each cleaned relative change. isDocs skips documentation. relevant counts non-doc paths. kind comes from classify. selected is a map from manifest path to Suite, filled by add. matched records whether that path hit a manifest. unmatched collects paths that did not. relevant == 0 sets Skipped. unmatched non-empty sets Broader, lowers confidence, and adds every spec. Selections is the map values sorted by manifest path. An empty selection also sets Skipped.
 }
 
 func add(dst map[string]*Suite, spec *manifest.Benchmark, path, queryID, why string) {
@@ -184,6 +190,9 @@ func add(dst map[string]*Suite, spec *manifest.Benchmark, path, queryID, why str
 	if queryID != "" && !contains(s.QueryIDs, queryID) {
 		s.QueryIDs = append(s.QueryIDs, queryID)
 	}
+	// What: records one reason and optional query id on a suite.
+	// Used by: SelectSpecs only.
+	// Logic: dst is keyed by the manifest's absolute path. s is the existing Suite or a new one stored in dst. path non-empty prefixes the reason. queryID is appended once.
 }
 
 func classify(path string) string {
@@ -201,6 +210,9 @@ func classify(path string) string {
 	default:
 		return "other"
 	}
+	// What: labels a relative path as manifest, migration, sql, app, infra, or other.
+	// Used by: SelectSpecs.
+	// Logic: the first matching prefix or suffix wins. app covers app/, services/, and cmd/demoapp/. Everything else, including internal Go files, is other and later forces the full suite.
 }
 
 func isDocs(path string) bool {
@@ -208,6 +220,9 @@ func isDocs(path string) bool {
 		return true
 	}
 	return strings.HasPrefix(path, "docs/") && strings.HasSuffix(path, ".md")
+	// What: reports whether a path is documentation and should not start a benchmark.
+	// Used by: SelectSpecs.
+	// Logic: README.md and CHANGELOG.md match exactly. Other markdown under docs/ also matches. A docs YAML file does not.
 }
 
 func annotationIDs(path string) []string {
@@ -223,6 +238,9 @@ func annotationIDs(path string) []string {
 		}
 	}
 	return ids
+	// What: reads benchforge:query or benchforge:query-id markers from a file.
+	// Used by: SelectSpecs for SQL and application files.
+	// Logic: a missing file returns nil, which makes an application change unmapped. matches is every regex capture. ids keeps the first capture group, which is the query id, without duplicates.
 }
 
 func rel(root, path string) string {
@@ -231,6 +249,9 @@ func rel(root, path string) string {
 		return filepath.ToSlash(path)
 	}
 	return filepath.ToSlash(r)
+	// What: makes an absolute path relative to the workspace, with forward slashes.
+	// Used by: SelectSpecs when comparing a changed path with a manifest or query file.
+	// Logic: r is the relative path. On error the original path is returned with slashes flipped. Success also flips slashes so Windows separators do not miss a match.
 }
 
 func cleanRel(path string) string {
@@ -240,6 +261,9 @@ func cleanRel(path string) string {
 		return ""
 	}
 	return path
+	// What: normalizes one changed path and drops paths that leave the workspace.
+	// Used by: SelectSpecs.
+	// Logic: Clean removes . and extra separators. TrimPrefix drops a leading ./. A result of . or anything starting with ../ becomes an empty string, which SelectSpecs ignores.
 }
 
 func contains(list []string, v string) bool {
@@ -249,6 +273,9 @@ func contains(list []string, v string) bool {
 		}
 	}
 	return false
+	// What: reports whether v is already in list.
+	// Used by: add and annotationIDs.
+	// Logic: s walks list. The first equal element returns true. An exhausted list returns false.
 }
 
 // Format renders a plan for a pull request or a job summary.
@@ -279,4 +306,7 @@ func Format(plan *Plan) string {
 	}
 	b.WriteString("\n")
 	return b.String()
+	// What: renders a plan as markdown for the job summary or a pull-request comment.
+	// Used by: internal/cli/plan.go cmdPlan.
+	// Logic: b collects the heading and confidence. A skipped plan with no selections says no benchmark was selected. reason lines come from plan.Reasons. An empty Selections returns before the table. s is each suite. queries joins QueryIDs, or the words "all declared queries" when the list is empty. why joins Reasons with semicolons.
 }

@@ -18,7 +18,7 @@ This repository is an engineering project inspired by publicly described benchma
 
 ## What a run does not do by itself
 
-The test suite does not apply Terraform, install Argo Rollouts, or start a distributed database. [docs/roadmap.md](docs/roadmap.md) records what each phase actually contains. [docs/limitations.md](docs/limitations.md) lists measurement limits that still apply to the local runner.
+CI validates manifests and posts which suites a diff selected. It does not start Docker, save a benchmark, or delete a container. Canary support is a promote, pause, or rollback decision plus a rollout file. It does not deploy. Details are in [docs/what-runs.md](docs/what-runs.md). [docs/limitations.md](docs/limitations.md) lists measurement limits that still apply to the local runner.
 
 ## Quick start
 

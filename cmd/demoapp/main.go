@@ -19,6 +19,9 @@ func main() {
 	srv := &http.Server{Addr: addr, Handler: newHandler(4), ReadHeaderTimeout: 5 * time.Second}
 	log.Printf("demo app listening on %s", addr)
 	log.Fatal(srv.ListenAndServe())
+	// What: serves the local HTTP target used by a k6 script.
+	// Used by: the demoapp process, package main only. cmd/demoapp/main_test.go calls newHandler, not main.
+	// Logic: addr is BENCHFORGE_DEMO_ADDR, or 127.0.0.1:8081 when that variable is empty. srv uses newHandler(4), so four requests can hold a slot at once.
 }
 
 func newHandler(limit int) http.Handler {
@@ -51,4 +54,7 @@ func newHandler(limit int) http.Handler {
 		_ = json.NewEncoder(w).Encode(map[string]any{"samples": len(waits)})
 	})
 	return mux
+	// What: builds the demo HTTP routes and a fixed-size slot pool.
+	// Used by: main, and cmd/demoapp/main_test.go TestOrdersAndHealth.
+	// Logic: slots is a buffered channel of size limit. waits records how long each /orders request waited for a slot, guarded by mu. /healthz writes ok. /orders records time.Since(start) after a slot is taken and releases the slot on return. A cancelled request gets status 408. /pool-waits returns the number of recorded waits.
 }

@@ -43,6 +43,9 @@ export default function () {
   check(res, { 'status is 200': (r) => r.status === 200 });
 }
 `, rate, durationSeconds, maxVUs, maxVUs, strings.ReplaceAll(url, "'", ""))
+	// What: returns a k6 constant-arrival-rate script as text.
+	// Used by: internal/observe/observe_test.go TestScriptAndParseK6. k6 is not executed here.
+	// Logic: rate, durationSeconds, and maxVUs are raised to at least 1 before they are printed. The format string places rate, duration, maxVUs twice (preAllocatedVUs and maxVUs), then the URL with single quotes removed so the generated JavaScript string cannot be broken by a quote in the URL.
 }
 
 // K6 is the parsed summary of a k6 JSON export.
@@ -88,6 +91,9 @@ func ParseK6(body []byte) (K6, error) {
 		out.Reason = fmt.Sprintf("k6 dropped %.0f iterations, so the load generator did not sustain the arrival rate", out.DroppedIterations)
 	}
 	return out, nil
+	// What: reads a k6 summary JSON into latency, rate, errors, and a saturation flag.
+	// Used by: internal/observe/observe_test.go TestScriptAndParseK6.
+	// Logic: raw holds metrics[name].values[key]. val looks up one number and returns 0 when the key is missing. out is filled from http_req_duration, http_reqs, http_req_failed, and dropped_iterations. MaxVUs prefers vus_max and falls back to vus. DroppedIterations > 0 sets GeneratorSaturated and Reason.
 }
 
 // Diagnosis is one possible explanation. Wording stays at "likely".
@@ -173,6 +179,9 @@ func Diagnose(rep report.Report) []Diagnosis {
 		})
 	}
 	return out
+	// What: lists likely bottleneck explanations for one report. It does not name a root cause.
+	// Used by: internal/observe/observe_test.go TestDiagnoseDoesNotClaimCertainty.
+	// Logic: out grows by one Diagnosis per matching rule. GeneratorSaturated adds a generator item. Pool wait p95 at least 20ms, and larger than query p95, adds a pool item. Cache hit under 0.9 with blks_read > 0 adds an I/O item. Deadlocks > 0 adds a lock item. q is each query; a plan containing "Seq Scan" adds one item per such query. Error rate above the assertion adds an error-rate item. Each item's Symptom starts with "likely" and includes an alternative explanation.
 }
 
 // Metrics holds the low-cardinality series for a BenchForge process.
@@ -224,4 +233,7 @@ func NewMetrics() *Metrics {
 	}
 	reg.MustRegister(m.Runs, m.Failures, m.Duration, m.QueueDepth, m.ActiveRuns, m.CleanupFailures, m.BudgetExceeded)
 	return m
+	// What: creates a private Prometheus registry with the BenchForge series.
+	// Used by: internal/observe/observe_test.go TestMetricNames. The API process does not serve these metrics yet.
+	// Logic: reg is a new registry, not the global one. m points at the counters, histogram, and gauges. MustRegister attaches all seven series to reg. The only label is outcome, on the two counters. Gauges start at zero until a caller sets them.
 }

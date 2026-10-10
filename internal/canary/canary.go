@@ -28,4 +28,7 @@ func Decide(candidateP95, stableP95, candidateErr float64, samples, minSamples i
 		return "promote", fmt.Sprintf("traffic %d%% meets the gate; this is the last step", currentPct)
 	}
 	return "promote", fmt.Sprintf("advance traffic from %d%% to %d%%", currentPct, next)
+	// What: chooses pause, rollback, or promote for one canary step.
+	// Used by: internal/canary/canary_test.go TestDecide. deploy/argo-rollouts/orders-rollout.yaml describes the same step list but does not call this function.
+	// Logic: minSamples is raised to 1 when the caller passes a smaller number. samples compared with minSamples returns pause. candidateErr above maxError returns rollback when maxError is set. candidateP95 above stableP95 times (1 + maxRegressionPct/100) returns rollback. next starts as currentPct. The loop sets next to the following entry in steps when it finds currentPct. If next never changes, the reason says this is the last step. Otherwise the reason names the move from currentPct to next.
 }

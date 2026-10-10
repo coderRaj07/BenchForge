@@ -26,6 +26,9 @@ func FinalOutcome(executionError string, eval Result) string {
 		return report.OutcomeError
 	}
 	return eval.Outcome
+	// What: keeps an infrastructure error from being reported as a regression.
+	// Used by: internal/cli/cli.go cmdCompare. Tested in compare_test.go TestExecutionErrorWins.
+	// Logic: executionError non-empty returns ERROR immediately. An empty eval.Outcome also returns ERROR. Otherwise the evaluation outcome is returned unchanged.
 }
 
 // Evaluate applies absolute gates and, when a baseline is present, relative gates.
@@ -91,6 +94,9 @@ func Evaluate(candidate report.Report, base *report.Report) Result {
 		outcome = report.OutcomeRegression
 	}
 	return Result{Outcome: outcome, Findings: findings, Comparison: comparison}
+	// What: judges a candidate report against absolute gates and an optional baseline.
+	// Used by: internal/engine/run.go after measurement, and internal/cli/cli.go cmdCompare. Tested in compare_test.go.
+	// Logic: findings starts with the single-run noise note. GeneratorSaturated returns INCONCLUSIVE immediately. measuredIterations of 0 returns ERROR. A count below MinIterations returns INCONCLUSIVE. base non-nil builds comparison through Compatible. An incompatible baseline returns INCONCLUSIVE. fingerprintFindings notes SQL text changes without failing. fail becomes true when checkAbsolute or checkRelative appends a failing finding. outcome is PASS unless fail is true, in which case it is REGRESSION.
 }
 
 func checkAbsolute(c report.Report, findings *[]report.Finding) bool {
