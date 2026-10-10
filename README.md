@@ -1,6 +1,6 @@
 # BenchForge
 
-BenchForge is a Go tool for repeatable PostgreSQL benchmarks. Version 0.1.0 runs a benchmark on a disposable database, writes a JSON report, and compares that report with a compatible baseline.
+BenchForge is a Go tool for repeatable PostgreSQL benchmarks. Version 0.2.0 runs a benchmark on a disposable database, writes a JSON report, compares that report with a compatible baseline, and selects which manifests to run from a diff.
 
 A developer points the CLI at a YAML manifest. BenchForge checks the manifest against a fixed resource policy, starts PostgreSQL in a container bound to `127.0.0.1`, applies the reviewed migration in the repo, loads a deterministic dataset, measures the declared queries, and deletes the container. The report records throughput, latency, errors, pool-acquire time, and database counters. A second report can be judged against the first.
 

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.0
+
+CI planning.
+
+- `benchforge plan` selects manifests from a git diff or an explicit path list and explains each choice.
+- Unmapped application and infrastructure changes request the full suite instead of being skipped.
+- `benchforge report` renders a pull-request comment and keeps the report exit code.
+- GitHub Actions run unit tests, manifest validation, and the plan comment.
+
 ## 0.1.0
 
 Local PostgreSQL benchmark.

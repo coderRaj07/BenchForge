@@ -37,6 +37,10 @@ func Main(args []string, stdout, stderr io.Writer) int {
 		return cmdRun(args[1:], stdout, stderr)
 	case "compare":
 		return cmdCompare(args[1:], stdout, stderr)
+	case "plan":
+		return cmdPlan(args[1:], stdout, stderr)
+	case "report":
+		return cmdReport(args[1:], stdout, stderr)
 	default:
 		fmt.Fprintf(stderr, "unknown command %q\n\n%s", args[0], usage)
 		return 1
@@ -184,6 +188,8 @@ Usage:
                  [--baseline report.json] [--duration-seconds N] [--scale N]
                  [--dsn URL --allow-external] [--keep] [--log-format text|json]
   benchforge compare --candidate report.json --baseline report.json [-o out.json]
+  benchforge plan [--changed path,path | --base git-rev] [-w workspace] [-o plan.md]
+  benchforge report -f report.json [-o comment.md]
   benchforge version
 
 Exit codes:

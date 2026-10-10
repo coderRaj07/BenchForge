@@ -18,12 +18,14 @@ This directory is the operator and contributor reference. The Go loader, runner,
 | [Versions](versions.md) | Pinned language, database, and module versions |
 | [Development](development.md) | How to build, test, and extend the code |
 | [Limitations](limitations.md) | What this release does not claim |
+| [Planner](planner.md) | Which manifests a diff selects, and why |
+| [CI](ci.md) | GitHub Actions workflows |
 | [Roadmap](roadmap.md) | Later phases, marked as not implemented until a release says otherwise |
 
 ## Release status
 
-Version **0.1.0** is the local database benchmark.
+Version **0.2.0** adds change detection and pull-request planning on top of the 0.1.0 local benchmark.
 
-It can validate a manifest, start a disposable PostgreSQL 17 container, seed a deterministic dataset, run a Go query mix or pgbench, write a JSON report, and compare that report with a compatible baseline.
+It can validate a manifest, start a disposable PostgreSQL 17 container, seed a deterministic dataset, run a Go query mix or pgbench, write a JSON report, compare that report with a compatible baseline, and choose manifests from a diff.
 
-It does not yet run the HTTP API, CI planner, k6, Prometheus, Terraform, capacity planner, or canary controller. Those are specified in [roadmap](roadmap.md) so the design is written down without being described as working.
+It does not yet run the HTTP API, k6, Prometheus, Terraform, capacity planner, or canary controller. Those are specified in [roadmap](roadmap.md).

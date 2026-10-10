@@ -8,6 +8,8 @@ benchforge run -f manifest.yaml [-o report.json] [-w workspace]
                [--baseline report.json] [--duration-seconds N] [--scale N]
                [--dsn URL --allow-external] [--keep] [--log-format text|json]
 benchforge compare --candidate report.json --baseline report.json [-o out.json]
+benchforge plan [--changed path,path | --base git-rev] [-w workspace] [-o plan.md]
+benchforge report -f report.json [-o comment.md]
 benchforge version
 benchforge help
 ```

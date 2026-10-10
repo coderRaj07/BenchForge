@@ -1,0 +1,42 @@
+name: benchmark-plan
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.27.2"
+
+      - name: Build CLI
+        run: go build -o bin/benchforge ./cmd/cli
+
+      - name: Select benchmarks from the pull request diff
+        run: ./bin/benchforge plan --base "origin/${{ github.base_ref }}" -o plan.md
+
+      - name: Publish plan to the job summary
+        run: cat plan.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Comment on the pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh pr comment "${{ github.event.pull_request.number }}" --body-file plan.md
+
+      - name: Upload plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-plan
+          path: plan.md

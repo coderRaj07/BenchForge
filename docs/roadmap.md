@@ -4,10 +4,12 @@ Items below are not implemented. Nothing in the 0.1.0 binary, the Docker test, o
 
 ## Phase 2 — CI regression detection
 
+Implemented in 0.2.0. See [planner](planner.md) and [ci](ci.md).
+
 - GitHub Actions for build, vet, unit tests, and manifest validation.
 - A planner that reads a git diff, associates changed SQL with `-- benchforge:query-id` comments and manifest query ids, and selects a manifest.
 - When the planner cannot tie an application change to a workload, it asks for the broader suite instead of skipping the run.
-- A pull-request comment rendered from the report, with exit codes preserved so a regression, an inconclusive run, and an infrastructure error are different checks.
+- `benchforge report` renders a pull-request comment. Its exit code preserves pass, regression, inconclusive, and error. The plan workflow posts the suite selection; it does not itself run the database benchmark.
 
 ## Phase 3 — API, queue, and state machine
 
