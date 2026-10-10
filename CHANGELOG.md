@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.5.0
+
+Local artifacts, a cost gate, and reviewed AWS files.
+
+- Artifact names cannot escape the storage directory.
+- Cost estimates are rejected when they exceed the budget.
+- Cleanup selection ignores unmanaged resources and resources with no run id.
+- Terraform describes the VPC, bucket, queue, registry, IAM role, and secret. It is not applied by the tests.
+
 ## 0.4.0
 
 HTTP load and diagnosis.

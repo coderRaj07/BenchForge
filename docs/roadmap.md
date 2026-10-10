@@ -35,11 +35,13 @@ OpenTelemetry tracing is not wired in this release.
 
 ## Phase 5 — AWS and Terraform
 
-- Reviewed Terraform modules for VPC, EKS, ECR, S3, SQS, IAM, and Secrets Manager. Pull requests do not supply Terraform to apply.
-- S3 for artifacts, with a local filesystem implementation of the same interface.
-- SQS implementation of the queue interface.
-- A cleanup reconciler for Jobs, volumes, and Terraform-owned ephemeral stacks. TTL on a Job is not enough.
-- A cost budget that fails a run before it provisions past the cap.
+Implemented in 0.5.0. See [cloud](cloud.md).
+
+- Reviewed Terraform for VPC, ECR, S3, SQS, IAM, and Secrets Manager. Pull requests do not supply Terraform to apply. This module does not create an EKS control plane.
+- Local artifact files with a path check. The tests do not call S3.
+- The SQS queue is declared in Terraform. The in-process queue from 0.3.0 remains the tested scheduler.
+- Cleanup selection for managed, labeled, expired resources, plus a Kubernetes Job manifest with its own TTL.
+- A cost budget check.
 
 ## Phase 6 — Capacity and canary
 

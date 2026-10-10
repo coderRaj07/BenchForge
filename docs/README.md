@@ -22,12 +22,13 @@ This directory is the operator and contributor reference. The Go loader, runner,
 | [CI](ci.md) | GitHub Actions workflows |
 | [API](api.md) | Run admission, states, and webhook checks |
 | [Observe](observe.md) | k6 summaries, metrics, and diagnosis |
+| [Cloud](cloud.md) | Artifacts, budgets, Terraform, and the benchmark Job |
 | [Roadmap](roadmap.md) | Later phases, marked as not implemented until a release says otherwise |
 
 ## Release status
 
-Version **0.4.0** adds HTTP load summaries, Prometheus series, and diagnosis on top of run admission.
+Version **0.5.0** adds local artifacts, a cost gate, and reviewed Terraform on top of the load and diagnosis tools.
 
-It can validate a manifest, start a disposable PostgreSQL 17 container, seed a deterministic dataset, run a Go query mix or pgbench, write a JSON report, compare that report with a compatible baseline, choose manifests from a diff, admit runs through an authenticated API, parse a k6 summary, and list likely bottlenecks.
+It can validate a manifest, start a disposable PostgreSQL 17 container, seed a deterministic dataset, run a Go query mix or pgbench, write a JSON report, compare that report with a compatible baseline, choose manifests from a diff, admit runs through an authenticated API, parse a k6 summary, list likely bottlenecks, and reject a run whose estimate exceeds its budget.
 
-It does not yet apply Terraform, size capacity, or gate a canary. Those are specified in [roadmap](roadmap.md).
+It does not yet size capacity or gate a canary. Those are specified in [roadmap](roadmap.md). The Terraform file is not applied by the test suite.

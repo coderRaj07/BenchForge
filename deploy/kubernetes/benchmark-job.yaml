@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: benchforge-run
+  labels:
+    benchforge.managed: "true"
+    benchforge.run_id: "replace-me"
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 600
+  activeDeadlineSeconds: 1800
+  template:
+    metadata:
+      labels:
+        benchforge.managed: "true"
+        benchforge.run_id: "replace-me"
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: benchmark
+          image: benchforge:local
+          resources:
+            requests:
+              cpu: "1"
+              memory: 1Gi
+            limits:
+              cpu: "1"
+              memory: 1Gi
