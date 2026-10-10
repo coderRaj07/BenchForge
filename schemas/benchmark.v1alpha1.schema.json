@@ -53,7 +53,8 @@
         "rampUpSeconds": { "type": "integer", "minimum": 0, "maximum": 600 },
         "clients": { "type": "integer", "minimum": 1 },
         "threads": { "type": "integer", "minimum": 1 },
-        "script": { "type": "string" }
+        "script": { "type": "string" },
+        "soak": { "type": "boolean" }
       }
     },
     "queries": {

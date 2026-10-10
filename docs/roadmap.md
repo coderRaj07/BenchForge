@@ -1,6 +1,6 @@
 # Roadmap
 
-Items below are not implemented. Nothing in the 0.1.0 binary, the Docker test, or the report schema performs them. They are written here so the intended shape is reviewable without being mistaken for a feature.
+Phases 2 through 7 are implemented as described under each heading. A feature that a section still marks as absent is absent.
 
 ## Phase 2 — CI regression detection
 
@@ -54,10 +54,12 @@ Implemented in 0.6.0. See [capacity](capacity.md).
 
 ## Phase 7 — Extensions
 
-- Shard-key, scatter-gather, and per-shard fields on the manifest, with a routing check. Not a distributed database.
-- Tenant skew distributions.
-- Optional pprof capture when the manifest asks for it, off otherwise.
-- Soak duration within the existing timeout machinery.
-- A cost-per-run figure from measured resource seconds and a price table stored in the repo.
+Implemented in 0.7.0. See [advanced](advanced.md).
+
+- Route checks for targeted, scatter, and aggregate contact counts. Not a distributed database.
+- Tenant skew weights.
+- CPU profile capture only when a duration is requested.
+- Soak runs must last at least 60 seconds.
+- Cost per run from measured CPU and memory time, with the fallback prices stated in the package.
 
 Each phase should leave `go test ./...` passing and should update [versions](versions.md), this file, and the limitation list.

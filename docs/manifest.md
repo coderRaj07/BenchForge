@@ -33,7 +33,8 @@ Run the CLI from the repository root, or pass `-w` as that root. Every relative 
 | `dataset.warmupSeconds` | no | `10` | `0` to `600`. Unmeasured full-concurrency work before the window |
 | `dataset.migrations` | yes | | Relative directory of `*.sql` files, applied in name order |
 | `workload.type` | yes | | `query`, `mixed`, or `pgbench` |
-| `workload.durationSeconds` | no | `30` | `1` to `1800` |
+| `workload.durationSeconds` | no | `30` | `1` to `1800`. At least 60 when `soak` is true |
+| `workload.soak` | no | false | Long run. Requires `durationSeconds` of at least 60 |
 | `workload.arrivalRatePerSecond` | no | `0` | `0` means closed loop. Otherwise open loop, max `20000` |
 | `workload.maxConcurrency` | no | `4` | `1` to `128`. Also the ceiling for pgbench clients |
 | `workload.rampUpSeconds` | no | `0` | `0` to `600`. Unmeasured. Query and mixed workloads only |

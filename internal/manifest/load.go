@@ -74,6 +74,7 @@ type fileWorkload struct {
 	Clients              *int   `yaml:"clients"`
 	Threads              *int   `yaml:"threads"`
 	Script               string `yaml:"script"`
+	Soak                 *bool  `yaml:"soak"`
 }
 
 type fileQuery struct {
@@ -183,6 +184,9 @@ func Load(path, workspace string, limits Limits) (*Benchmark, error) {
 	} else {
 		spec.DurationSeconds = 30
 	}
+	if doc.Workload.Soak != nil {
+		spec.Soak = *doc.Workload.Soak
+	}
 	if doc.Workload.ArrivalRatePerSecond != nil {
 		spec.ArrivalRate = *doc.Workload.ArrivalRatePerSecond
 	}
@@ -291,6 +295,9 @@ func Load(path, workspace string, limits Limits) (*Benchmark, error) {
 	}
 	if spec.DurationSeconds < limits.MinDurationSeconds || spec.DurationSeconds > limits.MaxDurationSeconds {
 		errs.add("workload.durationSeconds", fmt.Sprintf("must be between %d and %d", limits.MinDurationSeconds, limits.MaxDurationSeconds))
+	}
+	if spec.Soak && spec.DurationSeconds < 60 {
+		errs.add("workload.durationSeconds", "a soak run must last at least 60 seconds")
 	}
 	if spec.MaxConcurrency < 1 || spec.MaxConcurrency > limits.MaxConcurrency {
 		errs.add("workload.maxConcurrency", fmt.Sprintf("must be between 1 and %d", limits.MaxConcurrency))

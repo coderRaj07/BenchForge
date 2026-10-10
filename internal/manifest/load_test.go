@@ -113,6 +113,32 @@ resources:
 	}
 }
 
+func TestSoakRequiresSixtySeconds(t *testing.T) {
+	dir := scaffold(t)
+	writeManifest(t, dir, `
+apiVersion: benchforge.dev/v1alpha1
+kind: Benchmark
+metadata:
+  name: demo
+target:
+  type: postgres
+dataset:
+  profile: orders-mixed
+  migrations: migrations
+workload:
+  type: query
+  durationSeconds: 30
+  soak: true
+queries:
+  - id: get-customer-orders
+    file: q.sql
+`)
+	_, err := Load(filepath.Join(dir, "bench.yaml"), dir, LocalLimits())
+	if err == nil || !strings.Contains(err.Error(), "soak") {
+		t.Fatalf("expected soak duration error, got %v", err)
+	}
+}
+
 func TestRejectsFileReadSQL(t *testing.T) {
 	dir := scaffold(t)
 	os.WriteFile(filepath.Join(dir, "q.sql"), []byte("SELECT pg_read_file('/etc/passwd');\n"), 0o644)

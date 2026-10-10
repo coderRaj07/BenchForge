@@ -1,6 +1,6 @@
 # BenchForge
 
-BenchForge is a Go tool for repeatable PostgreSQL benchmarks. Version 0.2.0 runs a benchmark on a disposable database, writes a JSON report, compares that report with a compatible baseline, and selects which manifests to run from a diff.
+BenchForge is a Go tool for repeatable PostgreSQL benchmarks. Version 0.7.0 runs an isolated database benchmark, compares it with a baseline, plans a diff, admits runs through an API, and estimates capacity from measured samples.
 
 A developer points the CLI at a YAML manifest. BenchForge checks the manifest against a fixed resource policy, starts PostgreSQL in a container bound to `127.0.0.1`, applies the reviewed migration in the repo, loads a deterministic dataset, measures the declared queries, and deletes the container. The report records throughput, latency, errors, pool-acquire time, and database counters. A second report can be judged against the first.
 
@@ -16,9 +16,9 @@ This repository is an engineering project inspired by publicly described benchma
 - Compares a candidate with a baseline only when the workload and environment match.
 - Returns separate exit codes for pass, regression, inconclusive, and failure.
 
-## What 0.1.0 does not do
+## What a run does not do by itself
 
-There is no API server, CI planner, k6 runner, Prometheus endpoint, Terraform apply, capacity model, or canary controller in this version. [docs/roadmap.md](docs/roadmap.md) describes those later phases and marks them as not implemented. [docs/limitations.md](docs/limitations.md) lists measurement limits that still apply to the local runner.
+The test suite does not apply Terraform, install Argo Rollouts, or start a distributed database. [docs/roadmap.md](docs/roadmap.md) records what each phase actually contains. [docs/limitations.md](docs/limitations.md) lists measurement limits that still apply to the local runner.
 
 ## Quick start
 

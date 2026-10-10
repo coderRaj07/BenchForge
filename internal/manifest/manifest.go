@@ -60,6 +60,7 @@ type Benchmark struct {
 	Migrations         string
 	WorkloadType       string
 	DurationSeconds    int
+	Soak               bool
 	ArrivalRate        int
 	MaxConcurrency     int
 	RampUpSeconds      int

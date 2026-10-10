@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.7.0
+
+Routing checks, skew, soak, profiles, and cost per run.
+
+- Targeted, scatter, and aggregate routes are checked by shard count. No distributed database is started.
+- Tenant skew weights sum to 1, with the hot share on the first tenant.
+- CPU profiles are captured only when a duration is requested.
+- Soak manifests must run for at least 60 seconds.
+- Environment pairs with different resources are compared and are not called regressions.
+- Cost per run uses measured CPU and memory time. Missing prices fall back to stated assumptions.
+
 ## 0.6.0
 
 Capacity estimates and canary gates.
