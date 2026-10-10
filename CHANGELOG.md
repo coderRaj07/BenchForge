@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.6.0
+
+Capacity estimates and canary gates.
+
+- Sustainable rate, Little's Law, and CPU cores come from measured samples.
+- Memory comes from the measured working set, not from the request rate.
+- A saturated generator is not treated as capacity.
+- Canary steps pause, roll back, or advance from latency, errors, and sample count.
+- The Argo Rollout file is the traffic shape. The tests do not install a controller.
+
 ## 0.5.0
 
 Local artifacts, a cost gate, and reviewed AWS files.

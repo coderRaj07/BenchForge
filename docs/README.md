@@ -23,12 +23,13 @@ This directory is the operator and contributor reference. The Go loader, runner,
 | [API](api.md) | Run admission, states, and webhook checks |
 | [Observe](observe.md) | k6 summaries, metrics, and diagnosis |
 | [Cloud](cloud.md) | Artifacts, budgets, Terraform, and the benchmark Job |
+| [Capacity](capacity.md) | Sustainable rate, CPU and memory estimates, canary gates |
 | [Roadmap](roadmap.md) | Later phases, marked as not implemented until a release says otherwise |
 
 ## Release status
 
-Version **0.5.0** adds local artifacts, a cost gate, and reviewed Terraform on top of the load and diagnosis tools.
+Version **0.6.0** adds capacity estimates and canary step decisions.
 
-It can validate a manifest, start a disposable PostgreSQL 17 container, seed a deterministic dataset, run a Go query mix or pgbench, write a JSON report, compare that report with a compatible baseline, choose manifests from a diff, admit runs through an authenticated API, parse a k6 summary, list likely bottlenecks, and reject a run whose estimate exceeds its budget.
+It can validate a manifest, benchmark an isolated PostgreSQL database, compare a baseline, plan a diff, admit runs through the API, parse a k6 summary, list likely bottlenecks, reject an over-budget estimate, size a measured sweep, and pause, roll back, or advance a canary step.
 
-It does not yet size capacity or gate a canary. Those are specified in [roadmap](roadmap.md). The Terraform file is not applied by the test suite.
+Phase 7 extensions are specified in [roadmap](roadmap.md). The Terraform file is not applied by the test suite, and the Argo file does not install a controller.

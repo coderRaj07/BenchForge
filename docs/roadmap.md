@@ -45,11 +45,12 @@ Implemented in 0.5.0. See [cloud](cloud.md).
 
 ## Phase 6 — Capacity and canary
 
-- Sustainable throughput from a concurrency or arrival sweep.
-- Little's Law for average concurrency, and CPU seconds per request for a core estimate, each labeled as an estimate with the utilization target and the headroom that was assumed.
-- Memory estimates only from measured working-set samples, not from request rate alone.
-- Argo Rollouts (or an equivalent) manifests and a pure function that promotes, pauses, or rolls back from latency, error rate, sample count, and window length.
-- No destructive benchmark pointed at the canary's shared database.
+Implemented in 0.6.0. See [capacity](capacity.md).
+
+- Sustainable throughput from measured samples.
+- Little's Law and a CPU estimate, each labeled with the utilization target and headroom.
+- Memory from the measured working set only.
+- `canary.Decide` plus an Argo Rollout manifest. No controller is installed, and no benchmark is aimed at a shared production database.
 
 ## Phase 7 — Extensions
 
