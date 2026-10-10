@@ -1,0 +1,11 @@
+{
+  "title": "BenchForge",
+  "uid": "benchforge",
+  "schemaVersion": 39,
+  "panels": [
+    {"title": "Run history", "type": "timeseries", "targets": [{"expr": "sum by (outcome) (rate(benchforge_runs_total[5m]))"}]},
+    {"title": "Run duration", "type": "timeseries", "targets": [{"expr": "histogram_quantile(0.95, sum by (le) (rate(benchforge_run_duration_seconds_bucket[5m])))"}]},
+    {"title": "Queue and active runs", "type": "timeseries", "targets": [{"expr": "benchforge_queue_depth"}, {"expr": "benchforge_active_runs"}]},
+    {"title": "Cleanup and budget", "type": "stat", "targets": [{"expr": "benchforge_cleanup_failures_total"}, {"expr": "benchforge_resource_budget_exceeded_total"}]}
+  ]
+}

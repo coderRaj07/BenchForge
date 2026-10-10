@@ -23,12 +23,15 @@ Implemented in 0.3.0. See [api](api.md).
 
 ## Phase 4 — HTTP load and diagnosis
 
-- k6 scripts generated from a manifest, constant-arrival-rate, and a check that the generator itself was not saturated.
-- A small demo HTTP service in front of the orders schema so the k6 run has a target that is not production.
-- Prometheus metrics with low-cardinality labels: `benchforge_runs_total`, `benchforge_run_duration_seconds`, `benchforge_run_failures_total`, `benchforge_queue_depth`, `benchforge_active_runs`, `benchforge_cleanup_failures_total`, `benchforge_resource_budget_exceeded_total`.
-- Grafana dashboards backed by those metrics.
-- OpenTelemetry traces around a run.
-- A rule-based diagnosis report: symptom, metrics, competing explanations, confidence, and what evidence is still missing. Language stays at "likely" until the evidence says otherwise.
+Implemented in 0.4.0. See [observe](observe.md).
+
+- k6 scripts generated for a constant arrival rate, and a summary parser that flags dropped iterations.
+- A small demo HTTP service that does not open a database.
+- Prometheus metrics with low-cardinality labels.
+- One Grafana dashboard JSON file.
+- Diagnosis that stays at "likely" and records a competing explanation.
+
+OpenTelemetry tracing is not wired in this release.
 
 ## Phase 5 — AWS and Terraform
 

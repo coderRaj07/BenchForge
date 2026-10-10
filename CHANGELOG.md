@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.0
+
+HTTP load and diagnosis.
+
+- k6 constant-arrival-rate script generation and summary parsing. Dropped iterations mark the generator saturated.
+- Demo HTTP app on localhost with a bounded slot count.
+- Prometheus series and a Grafana dashboard JSON file.
+- Diagnosis text stays at "likely" and lists a competing explanation.
+
 ## 0.3.0
 
 Run admission.
