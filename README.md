@@ -6,7 +6,7 @@ A developer points the CLI at a YAML manifest. BenchForge checks the manifest ag
 
 This repository is an engineering project inspired by publicly described benchmarking practice. It is not an implementation of anyone else's internal system.
 
-## What 0.1.0 does
+## What the local benchmark does
 
 - Validates `benchforge.dev/v1alpha1` manifests and rejects unknown fields, path escapes, unsafe SQL, and resource requests above the local policy.
 - Starts `postgres:17.6-bookworm` at a pinned digest, or PostgreSQL 16 from its pinned tag when the manifest asks for 16.
